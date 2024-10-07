@@ -26,7 +26,7 @@ void printWarning(const char* vitalName) {
 }
 
 bool checkVitals(const char* vitalName, float value, float min, float max) {
-    if(value < min || value > max)
+    if (value < min || value > max)
     {
         printWarning(vitalName);
         return false;
