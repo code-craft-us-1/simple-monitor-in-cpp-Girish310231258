@@ -9,7 +9,7 @@ constexpr float MIN_TEMPERATURE = 95;
 constexpr float MAX_PULSE_RATE = 100;
 constexpr float MIN_PULSE_RATE = 60;
 constexpr float MIN_SPO2 = 90;
-
+constexpr float MAX_SPO2 = 100;
 
 void printWarningGraphics() {
     for (int i = 0; i < 6; i++) {
@@ -41,7 +41,7 @@ int vitalsOk(float temperature, float pulseRate, float spo2) {
         return 0;
     }
 
-    if (spo2 < MIN_SPO2) {        
+    if (checkVitals(spo2, MIN_SPO2, MAX_SPO2)) {
         printWarning("Oxygen Saturation");
         return 0;
     }
