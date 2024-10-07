@@ -1,11 +1,17 @@
 #include "./monitor.h"
-#include <assert.h>
 #include <thread>
 #include <chrono>
 #include <iostream>
 using std::cout, std::flush, std::this_thread::sleep_for, std::chrono::seconds;
 
-void printWarningMessage() {
+constexpr float MAX_TEMPERATURE = 102;
+constexpr float MIN_TEMPERATURE = 95;
+constexpr float MAX_PULSE_RATE = 100;
+constexpr float MIN_PULSE_RATE = 60;
+constexpr float MIN_SPO2 = 90;
+
+
+void printWarningGraphics() {
     for (int i = 0; i < 6; i++) {
         cout << "\r* " << flush;
         sleep_for(seconds(1));
@@ -14,34 +20,29 @@ void printWarningMessage() {
     }
 }
 
-bool isTemperatureCritical(float temperature) {
-    return temperature > 102 || temperature < 95;
+void printWarning(const char* vitalName) {
+    cout << vitalName << " is out of range!\n";
+    printWarningGraphics();
 }
 
-bool isPulseRateOutOfRange(float pulseRate) {
-    return pulseRate < 60 || pulseRate > 100;
-}
-
-bool isSpo2OutOfRange(float spo2) {
-    return spo2 < 90;
+bool checkVitals(float value, float min, float max)
+{
+    return value < min || value > max;
 }
 
 int vitalsOk(float temperature, float pulseRate, float spo2) {
-    if (isTemperatureCritical(temperature)) {
-        cout << "Temperature is critical!\n";
-        printWarningMessage();
+    if (checkVitals(temperature, MIN_TEMPERATURE, MAX_TEMPERATURE)) {        
+        printWarning("Temperature");
         return 0;
     }
 
-    if (isPulseRateOutOfRange(pulseRate)) {
-        cout << "Pulse Rate is out of range!\n";
-        printWarningMessage();
+    if (checkVitals(pulseRate, MIN_PULSE_RATE, MAX_PULSE_RATE)) {
+        printWarning("Pulse Rate");
         return 0;
     }
 
-    if (isSpo2OutOfRange(spo2)) {
-        cout << "Oxygen Saturation out of range!\n";
-        printWarningMessage();
+    if (spo2 < MIN_SPO2) {        
+        printWarning("Oxygen Saturation");
         return 0;
     }
 
