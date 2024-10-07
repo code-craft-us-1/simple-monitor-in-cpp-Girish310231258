@@ -25,13 +25,12 @@ void printWarning(const char* vitalName) {
     printWarningGraphics();
 }
 
-bool checkVitals(float value, float min, float max)
-{
+bool checkVitals(float value, float min, float max) {
     return value < min || value > max;
 }
 
 int vitalsOk(float temperature, float pulseRate, float spo2) {
-    if (checkVitals(temperature, MIN_TEMPERATURE, MAX_TEMPERATURE)) {        
+    if (checkVitals(temperature, MIN_TEMPERATURE, MAX_TEMPERATURE)) {
         printWarning("Temperature");
         return 0;
     }
