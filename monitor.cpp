@@ -25,7 +25,7 @@ void printWarning(const char* vitalName) {
     printWarningGraphics();
 }
 
-bool checkVitals(const char* vitalName, float value, float min, float max) {
+bool isVitalNormal(const char* vitalName, float value, float min, float max) {
     if (value < min || value > max) {
         printWarning(vitalName);
         return false;
@@ -33,10 +33,10 @@ bool checkVitals(const char* vitalName, float value, float min, float max) {
     return true;
 }
 
-int vitalsOk(float temperature, float pulseRate, float spo2) {
-    bool tempStatus = checkVitals("Temperature", temperature, MIN_TEMPERATURE, MAX_TEMPERATURE);
-    bool pulseRateStatus = checkVitals("Pulse Rate", pulseRate, MIN_PULSE_RATE, MAX_PULSE_RATE);
-    bool spo2Status = checkVitals("Oxygen Saturation", spo2, MIN_SPO2, MAX_SPO2);
+int checkVitalStatus(float temperature, float pulseRate, float spo2) {
+    bool tempStatus = isVitalNormal("Temperature", temperature, MIN_TEMPERATURE, MAX_TEMPERATURE);
+    bool pulseRateStatus = isVitalNormal("Pulse Rate", pulseRate, MIN_PULSE_RATE, MAX_PULSE_RATE);
+    bool spo2Status = isVitalNormal("Oxygen Saturation", spo2, MIN_SPO2, MAX_SPO2);
 
     return tempStatus && pulseRateStatus && spo2Status;
 }
