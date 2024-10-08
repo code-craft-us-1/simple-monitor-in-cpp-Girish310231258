@@ -1,38 +1,42 @@
 #include "./monitor.h"
-#include <assert.h>
 #include <thread>
 #include <chrono>
 #include <iostream>
 using std::cout, std::flush, std::this_thread::sleep_for, std::chrono::seconds;
 
-int vitalsOk(float temperature, float pulseRate, float spo2) {
-  if (temperature > 102 || temperature < 95) {
-    cout << "Temperature is critical!\n";
+constexpr float MAX_TEMPERATURE = 102;
+constexpr float MIN_TEMPERATURE = 95;
+constexpr float MAX_PULSE_RATE = 100;
+constexpr float MIN_PULSE_RATE = 60;
+constexpr float MIN_SPO2 = 90;
+constexpr float MAX_SPO2 = 100;
+
+void printWarningGraphics() {
     for (int i = 0; i < 6; i++) {
-      cout << "\r* " << flush;
-      sleep_for(seconds(1));
-      cout << "\r *" << flush;
-      sleep_for(seconds(1));
+        cout << "\r* " << flush;
+        sleep_for(seconds(1));
+        cout << "\r *" << flush;
+        sleep_for(seconds(1));
     }
-    return 0;
-  } else if (pulseRate < 60 || pulseRate > 100) {
-    cout << "Pulse Rate is out of range!\n";
-    for (int i = 0; i < 6; i++) {
-      cout << "\r* " << flush;
-      sleep_for(seconds(1));
-      cout << "\r *" << flush;
-      sleep_for(seconds(1));
+}
+
+void printWarning(const char* vitalName) {
+    cout << vitalName << " is out of range!\n";
+    printWarningGraphics();
+}
+
+bool isVitalNormal(const char* vitalName, float value, float min, float max) {
+    if (value < min || value > max) {
+        printWarning(vitalName);
+        return false;
     }
-    return 0;
-  } else if (spo2 < 90) {
-    cout << "Oxygen Saturation out of range!\n";
-    for (int i = 0; i < 6; i++) {
-      cout << "\r* " << flush;
-      sleep_for(seconds(1));
-      cout << "\r *" << flush;
-      sleep_for(seconds(1));
-    }
-    return 0;
-  }
-  return 1;
+    return true;
+}
+
+int checkVitalStatus(float temperature, float pulseRate, float spo2) {
+    bool tempStatus = isVitalNormal("Temperature", temperature, MIN_TEMPERATURE, MAX_TEMPERATURE);
+    bool pulseRateStatus = isVitalNormal("Pulse Rate", pulseRate, MIN_PULSE_RATE, MAX_PULSE_RATE);
+    bool spo2Status = isVitalNormal("Oxygen Saturation", spo2, MIN_SPO2, MAX_SPO2);
+
+    return tempStatus && pulseRateStatus && spo2Status;
 }
